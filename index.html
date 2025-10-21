@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Brainrot - Генератор ключей</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0c0c0c, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .key-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .key-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00ff88;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            word-break: break-all;
+        }
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .timer {
+            font-size: 1.3em;
+            color: #ff4444;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 STEEL BRAINROT</h1>
+        <p style="text-align: center; color: #888; margin-bottom: 30px;">Генератор лицензионных ключей • 24 часа доступа</p>
+
+        <div class="key-section">
+            <h2>Ваш ключ доступа:</h2>
+            <div class="key-display" id="keyDisplay">
+                Нажмите "Получить ключ"
+            </div>
+            
+            <div class="timer" id="timer">
+                --:--:--
+            </div>
+
+            <div>
+                <button class="btn" onclick="generateKey()">🎲 Получить ключ</button>
+                <button class="btn" onclick="copyKey()">📋 Копировать ключ</button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📖 Инструкция по активации:</h3>
+            <ol style="margin-left: 20px; line-height: 1.8;">
+                <li>Нажмите "Получить ключ" для генерации нового ключа</li>
+                <li>Скопируйте ключ с помощью кнопки "Копировать ключ"</li>
+                <li>Запустите скрипт Steel Brainrot в Roblox</li>
+                <li>Вставьте ключ в окно активации</li>
+                <li>Ключ действителен 24 часа с момента генерации</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function generateKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            
+            for (let i = 0; i < 19; i++) {
+                if (i === 4 || i === 9 || i === 14) {
+                    key += '-';
+                } else {
+                    key += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+            }
+            
+            document.getElementById('keyDisplay').textContent = key;
+            startTimer(24 * 60 * 60); // 24 часа
+        }
+
+        function startTimer(duration) {
+            let timer = duration;
+            const timerElement = document.getElementById('timer');
+            
+            const interval = setInterval(function () {
+                const hours = Math.floor(timer / 3600);
+                const minutes = Math.floor((timer % 3600) / 60);
+                const seconds = Math.floor(timer % 60);
+                
+                timerElement.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                timerElement.style.color = hours < 1 ? '#ff4444' : '#00ff88';
+                
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    timerElement.textContent = 'Ключ истек!';
+                    timerElement.style.color = '#ff4444';
+                }
+            }, 1000);
+        }
+
+        function copyKey() {
+            const key = document.getElementById('keyDisplay').textContent;
+            if (key !== 'Нажмите "Получить ключ"') {
+                navigator.clipboard.writeText(key).then(() => {
+                    alert('✅ Ключ скопирован в буфер обмена!');
+                }).catch(() => {
+                    // Fallback для старых браузеров
+                    const textArea = document.createElement('textarea');
+                    textArea.value = key;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('✅ Ключ скопирован!');
+                });
+            } else {
+                alert('❌ Сначала получите ключ!');
+            }
+        }
+
+        // Автогенерация при загрузке
+        window.onload = generateKey;
+    </script>
+</body>
+  </html>
